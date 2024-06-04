@@ -508,7 +508,7 @@
               <Phylotree
                 :phylogeny-index="String(phylogenyIndex)"
                 :phylogeny="phylogeny"
-                :phyloref="selectedPhyloref"
+                :phylorefs="[selectedPhyloref]"
                 :newick="phylogeny.newick"
                 :selected-node-label="getExpectedNodeLabel(phylogeny)"
               />

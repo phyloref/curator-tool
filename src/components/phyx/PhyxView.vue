@@ -271,6 +271,24 @@
         </div>
       </div>
     </div>
+
+    <!-- Display each phylogeny with all resolved phylorefs -->
+    <template v-for="(phylogeny, phylogenyIndex) of phylogenies">
+      <div
+          class="card mt-2"
+      >
+        <h5 class="card-header">
+          Phylogeny: {{ getPhylogenyLabel(phylogeny) }}
+        </h5>
+        <div class="card-body">
+          <Phylotree
+              :phylogeny-index="String(phylogenyIndex)"
+              :phylogeny="phylogeny"
+              :phylorefs="phylorefs"
+          />
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -293,10 +311,12 @@ import {
   PhylorefWrapper, PhylogenyWrapper, TaxonNameWrapper, TaxonomicUnitWrapper,
 } from '@phyloref/phyx';
 import { newickParser } from 'phylotree';
+import Phylotree from "@/components/phylogeny/Phylotree.vue";
 
 export default {
   name: 'PhyxView',
   components: {
+    Phylotree,
     BIconTrash,
   },
   computed: {
