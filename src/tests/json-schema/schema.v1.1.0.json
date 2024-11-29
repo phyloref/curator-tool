@@ -1,0 +1,582 @@
+{
+  "definitions": {
+    "nomenclaturalCodes": {
+      "type": "string",
+      "enum": [
+        "http://rs.tdwg.org/ontology/voc/TaxonName#ICZN",
+        "http://rs.tdwg.org/ontology/voc/TaxonName#ICBN",
+        "http://ontology.phyloref.org/tcan.owl#ICNP",
+        "http://ontology.phyloref.org/tcan.owl#ICTV",
+        "http://rs.tdwg.org/ontology/voc/TaxonName#ICNCP"
+      ]
+    },
+    "agent": {
+      "type": "object",
+      "description": "A person or entity.",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The full name of this agent.",
+          "minLength": 1
+        },
+        "alternate": {
+          "type": "array",
+          "description": "A list of alternate names for this agent.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "firstname": {
+          "type": "string",
+          "description": "The first (or given) name of this agent.",
+          "minLength": 1
+        },
+        "middlename": {
+          "type": "string",
+          "description": "The middle name of this agent.",
+          "minLength": 1
+        },
+        "lastname": {
+          "type": "string",
+          "description": "The last (or family) name of this agent.",
+          "minLength": 1
+        }
+      }
+    },
+    "citation": {
+      "type": "object",
+      "description": "A citation to a publication.",
+      "additionalProperties": false,
+      "properties": {
+        "bibliographicCitation": {
+          "type": "string",
+          "description": "A bibliographic reference for the resource. If not included, one will be generated from the other fields in this citation."
+        },
+        "type": {
+          "type": "string",
+          "description": "The type of this citation. Should be one of the BibTeX entry types (https://www.bibtex.com/e/entry-types/), such as “article”, “book”, “inbook” and so on.",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of this publication.",
+          "minLength": 1
+        },
+        "year": {
+          "type": "number",
+          "description": "The year of publication."
+        },
+        "authors": {
+          "type": "array",
+          "description": "The authors of this publication.",
+          "items": {
+            "$ref": "#/definitions/agent"
+          }
+        },
+        "editors": {
+          "type": "array",
+          "description": "The editors of this publication.",
+          "items": {
+            "$ref": "#/definitions/agent"
+          }
+        },
+        "series_editors": {
+          "type": "array",
+          "description": "The editors of the series of work of which this work is a part.",
+          "items": {
+            "$ref": "#/definitions/agent"
+          }
+        },
+        "publisher": {
+          "type": "string",
+          "description": "The publisher of this publication."
+        },
+        "city": {
+          "type": "string",
+          "description": "The city in which this publication was published."
+        },
+        "pages": {
+          "type": "string",
+          "description": "The page numbers of this publication that this citation refers to.",
+          "minLength": 1
+        },
+        "figure": {
+          "type": "string",
+          "description": "The figure(s) in the work being cited."
+        },
+        "journal": {
+          "type": "object",
+          "description": "An object containing information on the journal this publication belongs to.",
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "The journal name.",
+              "minLength": 1
+            },
+            "volume": {
+              "type": "string",
+              "description": "The journal volume.",
+              "minLength": 1
+            },
+            "number": {
+              "type": "string",
+              "description": "The journal issue number.",
+              "minLength": 1
+            },
+            "pages": {
+              "type": "string",
+              "description": "The page numbers of the journal that this citation refers to.",
+              "minLength": 1
+            },
+            "identifier": {
+              "type": "array",
+              "description": "A list of identifiers for this journal.",
+              "items": {
+                "additionalProperties": false,
+                "required": [
+                  "type",
+                  "id"
+                ],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "description": "The type of identifier (e.g. 'issn')"
+                  },
+                  "id": {
+                    "type": "string",
+                    "description": "The identifier itself (e.g. '0002-9327')"
+                  }
+                }
+              }
+            }
+          },
+          "required": [
+            "name"
+          ]
+        },
+        "booktitle": {
+          "type": "string",
+          "description": "The title of the book that this publication is part of."
+        },
+        "identifier": {
+          "type": "array",
+          "description": "A list of identifiers for this publication.",
+          "items": {
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "id"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "The type of identifier (e.g. 'doi')"
+              },
+              "id": {
+                "type": "string",
+                "description": "The identifier itself (e.g. '10.1146/annurev.earth.31.100901.141308')"
+              }
+            }
+          }
+        },
+        "link": {
+          "type": "array",
+          "description": "Links to this publication.",
+          "items": {
+            "required": [
+              "url"
+            ],
+            "properties": {
+              "additionalProperties": false,
+              "url": {
+                "type": "string",
+                "description": "The URL of this publication."
+              }
+            }
+          }
+        }
+      }
+    },
+    "taxonomic_unit_by_id": {
+      "type": "object",
+      "description": "A taxonomic unit identified solely by IRI.",
+      "additionalProperties": false,
+      "required": [
+        "@id"
+      ],
+      "properties": {
+        "@id": {
+          "type": "string",
+          "format": "uri",
+          "description": "An opaque identifier for this taxonomic unit."
+        }
+      }
+    },
+    "taxon_name": {
+      "type": "object",
+      "description": "A taxonomic name.",
+      "properties": {
+        "@type": {
+          "type": "string",
+          "description": "The type of this taxonomic name.",
+          "enum": [
+            "http://rs.tdwg.org/ontology/voc/TaxonName#TaxonName"
+          ]
+        },
+        "nomenclaturalCode": {
+          "description": "The nomenclatural code under which this name is defined.",
+          "$ref": "#/definitions/nomenclaturalCodes"
+        },
+        "label": {
+          "description": "The full taxon name, including an authority or year components.",
+          "type": "string",
+          "minLength": 1
+        },
+        "nameComplete": {
+          "description": "The complete uninomial, binomial or trinomial name without any authority or year components.",
+          "type": "string",
+          "minLength": 1
+        },
+        "genusPart": {
+          "description": "The genus portion of the taxon name.",
+          "type": "string",
+          "minLength": 1
+        },
+        "specificEpithet": {
+          "description": "The genus portion of the taxon name.",
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "@type",
+        "nameComplete"
+      ]
+    },
+    "taxon_concept": {
+      "type": "object",
+      "description": "A taxon or taxon concept.",
+      "additionalProperties": false,
+      "properties": {
+        "@type": {
+          "type": "string",
+          "description": "The type of this taxonomic unit.",
+          "enum": [
+            "http://rs.tdwg.org/ontology/voc/TaxonConcept#TaxonConcept"
+          ]
+        },
+        "@id": {
+          "description": "An opaque identifier for this taxonomic unit.",
+          "type": "string",
+          "format": "uri",
+          "minLength": 1
+        },
+        "label": {
+          "description": "A label for describing this taxonomic unit.",
+          "type": "string",
+          "minLength": 1
+        },
+        "hasName": {
+          "description": "The taxonomic name of this taxon or taxon concept.",
+          "$ref": "#/definitions/taxon_name"
+        },
+        "nameAccordingTo": {
+          "description": "Publication or authors whose circumscription of the taxon is intended to be used. If omitted, the nominal taxon concept (in the sense of Kennedy et al (2006)) will be assumed.",
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "@type",
+        "hasName"
+      ]
+    },
+    "specimen": {
+      "type": "object",
+      "description": "A taxon or taxon concept.",
+      "additionalProperties": false,
+      "required": [
+        "@type"
+      ],
+      "properties": {
+        "@type": {
+          "type": "string",
+          "description": "The type of this specimen.",
+          "enum": [
+            "http://rs.tdwg.org/dwc/terms/Occurrence"
+          ]
+        },
+        "@id": {
+          "description": "An identifier for this specimen.",
+          "type": "string",
+          "format": "uri",
+          "minLength": 1
+        },
+        "label": {
+          "description": "A label for describing this specimen.",
+          "type": "string",
+          "minLength": 1
+        },
+        "basisOfRecord": {
+          "description": "The type of specimen indicated.",
+          "type": "string",
+          "minLength": 1
+        },
+        "institutionCode": {
+          "description": "The name (or acronym) in use by the institution having custody of the object(s) or information referred to in the record.",
+          "type": "string",
+          "minLength": 1
+        },
+        "collectionCode": {
+          "description": "The name, acronym, code, or initialism identifying the collection or data set from which the record was derived.",
+          "type": "string",
+          "minLength": 1
+        },
+        "catalogNumber": {
+          "description": "An identifier for the record within the data set or collection.",
+          "type": "string",
+          "minLength": 1
+        },
+        "occurrenceID": {
+          "description": "An identifier for the Occurrence (as opposed to a particular digital record of the occurrence). In the absence of a persistent GUID, constructed from a unique combination of identifiers in the record, usually the Darwin Core Triplet of institutionCode, collectionCode and catalogNumber.",
+          "type": "string",
+          "minLength": 1
+        },
+        "hasName": {
+          "description": "Can be used to record the taxon name that this specimen has been identified to.",
+          "$ref": "#/definitions/taxon_name"
+        }
+      }
+    },
+    "taxonomic_unit": {
+      "description": "A unit of taxon: a taxon concept or specimen.",
+      "anyOf": [
+        {
+          "$ref": "#/definitions/taxon_concept"
+        },
+        {
+          "$ref": "#/definitions/specimen"
+        },
+        {
+          "$ref": "#/definitions/taxonomic_unit_by_id"
+        }
+      ]
+    },
+    "contributor": {
+      "description": "A contributor to a Phyx file.",
+      "additionalProperties": false,
+      "properties": {
+        "@id": {
+          "description": "An identifier for this contributor. ORCIDs are strongly recommended.",
+          "type": "string",
+          "format": "uri",
+          "minLength": 1
+        },
+        "@type": {
+          "description": "A type for this contributor. Should be an RDF class, such as http://xmlns.com/foaf/0.1/Person.",
+          "type": "string",
+          "format": "uri",
+          "minLength": 1
+        },
+        "name": {
+          "description": "The name of this contributor.",
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "A Phyx file contains digital clade definitions and optionally phylogenies that indicate where they should resolve. See http://phyloref.org/phyx.js for more information.",
+  "type": "object",
+  "required": [
+    "@context"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "@context": {
+      "description": "The JSON-LD context, necessary to interpret this JSON file as an RDF file.",
+      "minLength": 1,
+      "type": "string",
+      "format": "uri-reference"
+    },
+    "doi": {
+      "description": "The Digital Object Identifier (doi) for this Phyx file.",
+      "minLength": 1,
+      "type": "string"
+    },
+    "source": {
+      "description": "A citation to this Phyx file.",
+      "$ref": "#/definitions/citation"
+    },
+    "contributors": {
+      "description": "A list of contributors to this Phyx file.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/contributor"
+      }
+    },
+    "defaultNomenclaturalCodeIRI": {
+      "description": "The default nomenclatural code to be used in this file, for both phylogenies and phyloreferences. This will only be used for nodes and taxon concept specifiers that don’t have a nomenclatural code set.",
+      "$ref": "#/definitions/nomenclaturalCodes"
+    },
+    "@type": {
+      "type": "array",
+      "description": "Additional RDF types for the top-level object. `owl:Ontology` is added automatically.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "owl:imports": {
+      "type": "array",
+      "description": "A list of additional OWL imports to be added in this ontology.",
+      "items": {
+        "format": "uri-reference"
+      }
+    },
+    "phylogenies": {
+      "type": "array",
+      "description": "A phylogeny is an evolutionary hypothesis that can be used to test Phyx files.",
+      "minItems": 0,
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "newick"
+        ],
+        "properties": {
+          "@id": {
+            "type": "string",
+            "format": "uri-reference",
+            "description": "The identifier for this phylogeny."
+          },
+          "label": {
+            "type": "string",
+            "description": "The label of this phylogeny.",
+            "minLength": 1
+          },
+          "newick": {
+            "type": "string",
+            "description": "The Newick string.",
+            "minLength": 2
+          },
+          "source": {
+            "description": "The source of this phylogeny.",
+            "$ref": "#/definitions/citation"
+          },
+          "additionalNodeProperties": {
+            "type": "object",
+            "description": "A dictionary mapping node labels to properties that should be added to the node when converting this Phyx file into an OWL ontology."
+          },
+          "curatorNotes": {
+            "type": "string",
+            "description": "Curator notes associated with this phylogeny."
+          }
+        }
+      }
+    },
+    "phylorefs": {
+      "type": "array",
+      "minItems": 0,
+      "items": {
+        "additionalProperties": false,
+        "required": [
+          "definition"
+        ],
+        "properties": {
+          "@id": {
+            "type": "string",
+            "format": "uri-reference",
+            "description": "An IRI that identifies this phyloreference."
+          },
+          "phylorefType": {
+            "description": "The type of this phyloreference.",
+            "enum": [
+              "phyloref:PhyloreferenceUsingMaximumClade",
+              "phyloref:PhyloreferenceUsingMinimumClade",
+              "phyloref:PhyloreferenceUsingApomorphy"
+            ]
+          },
+          "label": {
+            "type": "string",
+            "description": "The name or label of this phyloreference."
+          },
+          "scientificNameAuthorship": {
+            "description": "The authors who created this clade definition.",
+            "$ref": "#/definitions/citation"
+          },
+          "namePublishedIn": {
+            "description": "If the label is a scientific name, then this field records the publication in which that name was first published.",
+            "$ref": "#/definitions/citation"
+          },
+          "definition": {
+            "type": "string",
+            "description": "A free-text field for storing the verbatim clade definition",
+            "minLength": 1
+          },
+          "definitionSource": {
+            "description": "The publication in which this clade definition was first published.",
+            "$ref": "#/definitions/citation"
+          },
+          "internalSpecifiers": {
+            "type": "array",
+            "description": "An array of taxonomic units that must be included in the defined clade",
+            "uniqueItems": true,
+            "minItems": 1,
+            "items": {
+              "$ref": "#/definitions/taxonomic_unit"
+            }
+          },
+          "externalSpecifiers": {
+            "type": "array",
+            "description": "An array of taxonomic units that must be excluded from the defined clade",
+            "uniqueItems": true,
+            "minItems": 0,
+            "items": {
+              "$ref": "#/definitions/taxonomic_unit"
+            }
+          },
+          "apomorphy": {
+            "type": "object",
+            "description": "If used, indicates that this phyloreference designates the clade that arises from the first appearance of this trait that is synapomorphic with an internal specifier. In this case, exactly one internal specifier and no external specifiers must be provided.",
+            "additionalProperties": false,
+            "properties": {
+              "@type": {
+                "description": "The type of this apomorphy.",
+                "type": "string",
+                "format": "uri"
+              },
+              "definition": {
+                "description": "A natural language description of this apomorphy."
+              },
+              "phenotypicQuality": {
+                "description": "An opaque IRI that identifies the phenotypic quality if the phenotype referenced by this apomorphy can be decomposed into entity and quality (EQ model).",
+                "type": "string",
+                "format": "uri"
+              },
+              "bearingEntity": {
+                "description": "An IRI that identifies the entity bearing the phenotypic quality if the phenotype referenced by this apomorphy can be decomposed into a quality and the entity bearing the quality (EQ model).",
+                "type": "string",
+                "format": "uri"
+              }
+            },
+            "required": [
+              "@type",
+              "definition"
+            ]
+          },
+          "expectedResolution": {
+            "type": "object",
+            "description": "A dictionary of phylogeny identifiers to objects that record the nodeLabel (the node label on that phylogeny this phylogeny is expected to resolve to) as well as an optional description (describing why that node was chosen)."
+          },
+          "curatorNotes": {
+            "type": "string",
+            "description": "Curator notes associated with this phyloreference."
+          }
+        }
+      }
+    }
+  }
+}
