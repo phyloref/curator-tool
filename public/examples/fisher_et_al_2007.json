@@ -289,6 +289,7 @@
                     "@type": "http://rs.tdwg.org/ontology/voc/TaxonConcept#TaxonConcept",
                     "hasName": {
                         "@type": "http://rs.tdwg.org/ontology/voc/TaxonName#TaxonName",
+                        "nomenclaturalCode": "http://rs.tdwg.org/ontology/voc/TaxonName#ICBN",
                         "label": "Syrrhopodon croceus",
                         "nameComplete": "Syrrhopodon croceus",
                         "genusPart": "Syrrhopodon",
@@ -314,6 +315,7 @@
                     "@type": "http://rs.tdwg.org/ontology/voc/TaxonConcept#TaxonConcept",
                     "hasName": {
                         "@type": "http://rs.tdwg.org/ontology/voc/TaxonName#TaxonName",
+                        "nomenclaturalCode": "http://rs.tdwg.org/ontology/voc/TaxonName#ICBN",
                         "label": "Syrrhopodon mauritianus",
                         "nameComplete": "Syrrhopodon mauritianus",
                         "genusPart": "Syrrhopodon",
