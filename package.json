@@ -16,7 +16,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.29",
     "@fortawesome/free-solid-svg-icons": "^5.13.1",
     "@fortawesome/vue-fontawesome": "^0.1.10",
-    "@phyloref/phyx": "^1.0.1",
+    "@phyloref/phyx": "^1.2.0-alpha3",
     "bootstrap": "^4.5.0",
     "bootstrap-vue": "^2.15.0",
     "buffer": "^6.0.3",
