@@ -3,12 +3,51 @@
  */
 
 import Vue from 'vue';
-import { PhylorefWrapper } from '@phyloref/phyx';
+import {PhylorefWrapper, TaxonConceptWrapper} from '@phyloref/phyx';
 import { has, keys, cloneDeep } from 'lodash';
 
+function createEmptySpecifier(nomenCodeIRI) {
+  return {
+    "@type": "http://rs.tdwg.org/ontology/voc/TaxonConcept#TaxonConcept",
+    "hasName": {
+      "@type": "http://rs.tdwg.org/ontology/voc/TaxonName#TaxonName",
+      "nomenclaturalCode": nomenCodeIRI,
+      "nameComplete": "",
+      "genusPart": "",
+      "specificEpithet": "",
+    }
+  }
+}
+
 export default {
+  unmounted() {
+    this.updateSpecifier();
+  },
   getters: {
     getPhylorefType: (state, getters) => (phyloref) => {
+      const internalSpecifierCount = (phyloref.internalSpecifiers || []).length;
+      const externalSpecifierCount = (phyloref.externalSpecifiers || []).length;
+
+      // Handle apormophy-based definitions separately.
+      if (getters.isApomorphyBasedPhyloref(phyloref)) {
+        // Apomorphy-based phyloreferences must have a single internal specifier.
+        if (externalSpecifierCount === 0 && internalSpecifierCount === 1) {
+          return 'phyloref:PhyloreferenceUsingApomorphy';
+        }
+
+        return undefined;
+      }
+
+      if (externalSpecifierCount > 0) {
+        if (internalSpecifierCount > 0) return 'phyloref:PhyloreferenceUsingMaximumClade';
+      } else if (internalSpecifierCount > 0) {
+        if (internalSpecifierCount > 1) return 'phyloref:PhyloreferenceUsingMinimumClade';
+        return undefined;
+      }
+
+      return undefined;
+    },
+    getPhylorefTypeDescription: (state, getters) => (phyloref) => {
       const internalSpecifierCount = (phyloref.internalSpecifiers || []).length;
       const externalSpecifierCount = (phyloref.externalSpecifiers || []).length;
 
@@ -78,7 +117,8 @@ export default {
         Vue.set(payload.phyloref, 'externalSpecifiers', []);
       }
 
-      payload.phyloref.externalSpecifiers.push({});
+      payload.phyloref.externalSpecifiers.push(createEmptySpecifier(this.getters.getDefaultNomenCodeIRI));
+      payload.phyloref.phylorefType = this.getters.getPhylorefType(payload.phyloref);
     },
 
     addInternalSpecifier(state, payload) {
@@ -92,7 +132,8 @@ export default {
         Vue.set(payload.phyloref, 'internalSpecifiers', []);
       }
 
-      payload.phyloref.internalSpecifiers.push({});
+      payload.phyloref.internalSpecifiers.push(createEmptySpecifier(this.getters.getDefaultNomenCodeIRI));
+      payload.phyloref.phylorefType = this.getters.getPhylorefType(payload.phyloref)
     },
 
     deleteSpecifier(state, payload) {
@@ -106,6 +147,7 @@ export default {
       }
 
       new PhylorefWrapper(payload.phyloref).deleteSpecifier(payload.specifier);
+      payload.phyloref.phylorefType = this.getters.getPhylorefType(payload.phyloref)
     },
 
     setSpecifierProps(state, payload) {
@@ -174,6 +216,8 @@ export default {
       } else {
         throw new Error(`Unknown specifier type: ${payload.specifierType}`);
       }
+
+      payload.phyloref.phylorefType = this.getters.getPhylorefType(payload.phyloref)
     },
 
     setSpecifierPart(state, payload) {
