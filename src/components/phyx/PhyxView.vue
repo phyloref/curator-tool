@@ -122,7 +122,7 @@
                   {{ getPhylorefLabel(phyloref) }}
                 </a>
               </td>
-              <td>{{ $store.getters.getPhylorefType(phyloref) }}</td>
+              <td>{{ $store.getters.getPhylorefTypeDescription(phyloref) }}</td>
               <td>{{ (phyloref.internalSpecifiers || []).length }}</td>
               <td>{{ (phyloref.externalSpecifiers || []).length }}</td>
               <td v-for="(phylogeny, phylogenyIndex) of phylogenies">
@@ -498,7 +498,7 @@ export default {
         return [
           this.$store.getters.getPhylorefId(phyloref),
           wrappedPhyloref.label,
-          this.$store.getters.getPhylorefType(phyloref),
+          this.$store.getters.getPhylorefTypeDescription(phyloref),
           // Write out the clade definition.
           phyloref.definition || "",
           // Write out the internal specifier labels

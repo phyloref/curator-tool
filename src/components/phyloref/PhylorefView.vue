@@ -573,7 +573,7 @@ export default {
     },
     computedPhylorefType() {
       // Return the type of phyloreference based on internal/external specifier structure.
-      return this.$store.getters.getPhylorefType(this.selectedPhyloref);
+      return this.$store.getters.getPhylorefTypeDescription(this.selectedPhyloref);
     },
     phylorefURI() {
       // Get the base URI of this phyloreference.

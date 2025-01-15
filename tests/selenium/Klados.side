@@ -1,0 +1,394 @@
+{
+  "id": "1609c73b-9abd-4241-a7e9-532e2a0ead5c",
+  "version": "2.0",
+  "name": "Klados",
+  "url": "http://localhost:5173",
+  "tests": [{
+    "id": "40553156-0427-41ef-a43e-97500b1e6f65",
+    "name": "Basic demo",
+    "commands": [{
+      "id": "d50f0fad-fc80-49ac-8c84-859637da4e97",
+      "comment": "",
+      "command": "open",
+      "target": "/klados/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "4bd349b5-d340-4391-a5e6-e4c15f75be7e",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "973x783",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "372c205a-a606-40be-b078-2aa22873b652",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Read an example file",
+      "targets": [
+        ["linkText=Read an example file", "linkText"],
+        ["css=.list-group-item:nth-child(4)", "css:finder"],
+        ["xpath=//a[contains(text(),'Read an example file')]", "xpath:link"],
+        ["xpath=//a[@onclick=\"$('.phyx-examples').toggleClass('d-none')\"]", "xpath:attributes"],
+        ["xpath=//div[@id='sidebar-wrapper']/div/div/a[3]", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, 'javascript: void(0)')])[3]", "xpath:href"],
+        ["xpath=//a[3]", "xpath:position"],
+        ["xpath=//a[contains(.,'Read an example file')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "e6005b7c-cf52-4677-bbfe-1e03a8df0ada",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=● Brochu 2003",
+      "targets": [
+        ["linkText=● Brochu 2003", "linkText"],
+        ["css=.list-group-item:nth-child(5)", "css:finder"],
+        ["xpath=//a[contains(text(),'● Brochu 2003')]", "xpath:link"],
+        ["xpath=//div[@id='sidebar-wrapper']/div/div/a[4]", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, 'javascript: void(0)')])[4]", "xpath:href"],
+        ["xpath=//a[4]", "xpath:position"],
+        ["xpath=//a[contains(.,'● Brochu 2003')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "0fc0b9ff-88be-4714-9a0e-d0fd589eb846",
+      "comment": "",
+      "command": "click",
+      "target": "css=.start-reasoning > span",
+      "targets": [
+        ["css=.start-reasoning > span", "css:finder"],
+        ["xpath=//div[@id='sidebar-wrapper']/div/div/a[11]/span", "xpath:idRelative"],
+        ["xpath=//span", "xpath:position"],
+        ["xpath=//span[contains(.,'Resolve against phylogenies')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "44752a19-c41f-41e4-88b0-4a52d426ad79",
+      "comment": "",
+      "command": "click",
+      "target": "css=tr:nth-child(1) > td:nth-child(6)",
+      "targets": [
+        ["css=tr:nth-child(1) > td:nth-child(6)", "css:finder"],
+        ["xpath=//div[@id='page-content-wrapper']/div/div[2]/div/table/tbody/tr/td[6]", "xpath:idRelative"],
+        ["xpath=//td[6]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "eb32da95-4670-4d44-8eb8-98d4ac266ac9",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=tr:nth-child(1) > td:nth-child(6)",
+      "targets": [
+        ["css=tr:nth-child(1) > td:nth-child(6)", "css:finder"],
+        ["xpath=//div[@id='page-content-wrapper']/div/div[2]/div/table/tbody/tr/td[6]", "xpath:idRelative"],
+        ["xpath=//td[6]", "xpath:position"]
+      ],
+      "value": "Expected to resolve to node Alligatoridae and resolved correctly to Alligatoridae"
+    }, {
+      "id": "d374082c-0a6b-482f-8f48-244cb07b3e61",
+      "comment": "",
+      "command": "click",
+      "target": "css=tr:nth-child(2) > td:nth-child(6)",
+      "targets": [
+        ["css=tr:nth-child(2) > td:nth-child(6)", "css:finder"],
+        ["xpath=//div[@id='page-content-wrapper']/div/div[2]/div/table/tbody/tr[2]/td[6]", "xpath:idRelative"],
+        ["xpath=//tr[2]/td[6]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "ffa19c2e-8577-46f9-956a-79d7fb4b4a6a",
+      "comment": "",
+      "command": "click",
+      "target": "css=tr:nth-child(2) > td:nth-child(6)",
+      "targets": [
+        ["css=tr:nth-child(2) > td:nth-child(6)", "css:finder"],
+        ["xpath=//div[@id='page-content-wrapper']/div/div[2]/div/table/tbody/tr[2]/td[6]", "xpath:idRelative"],
+        ["xpath=//tr[2]/td[6]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "d105d248-984d-4c2a-bbcd-70ee725f1004",
+      "comment": "",
+      "command": "click",
+      "target": "css=tr:nth-child(2) > td:nth-child(6)",
+      "targets": [
+        ["css=tr:nth-child(2) > td:nth-child(6)", "css:finder"],
+        ["xpath=//div[@id='page-content-wrapper']/div/div[2]/div/table/tbody/tr[2]/td[6]", "xpath:idRelative"],
+        ["xpath=//tr[2]/td[6]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "23ad63b4-1219-4925-9d58-7e827ce4cd1b",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=tr:nth-child(2) > td:nth-child(6)",
+      "targets": [
+        ["css=tr:nth-child(2) > td:nth-child(6)", "css:finder"],
+        ["xpath=//div[@id='page-content-wrapper']/div/div[2]/div/table/tbody/tr[2]/td[6]", "xpath:idRelative"],
+        ["xpath=//tr[2]/td[6]", "xpath:position"]
+      ],
+      "value": "Expected to resolve to node Alligator mississippiensis and resolved correctly to Alligator mississippiensis"
+    }, {
+      "id": "610e4e0e-d186-4e8d-b9ef-6c426fb20704",
+      "comment": "",
+      "command": "click",
+      "target": "css=tr:nth-child(3) > td:nth-child(6)",
+      "targets": [
+        ["css=tr:nth-child(3) > td:nth-child(6)", "css:finder"],
+        ["xpath=//div[@id='page-content-wrapper']/div/div[2]/div/table/tbody/tr[3]/td[6]", "xpath:idRelative"],
+        ["xpath=//tr[3]/td[6]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "b690393e-ef3c-48a5-905d-8681ceb25a18",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=tr:nth-child(3) > td:nth-child(6)",
+      "targets": [
+        ["css=tr:nth-child(3) > td:nth-child(6)", "css:finder"],
+        ["xpath=//div[@id='page-content-wrapper']/div/div[2]/div/table/tbody/tr[3]/td[6]", "xpath:idRelative"],
+        ["xpath=//tr[3]/td[6]", "xpath:position"]
+      ],
+      "value": "Expected to resolve to node Caiman crocodilus and resolved correctly to Caiman crocodilus"
+    }, {
+      "id": "f25025a4-3949-4816-a60a-ce392958c743",
+      "comment": "",
+      "command": "click",
+      "target": "css=tr:nth-child(4) > td:nth-child(6)",
+      "targets": [
+        ["css=tr:nth-child(4) > td:nth-child(6)", "css:finder"],
+        ["xpath=//div[@id='page-content-wrapper']/div/div[2]/div/table/tbody/tr[4]/td[6]", "xpath:idRelative"],
+        ["xpath=//tr[4]/td[6]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "bc5d798f-a789-4c89-9cf7-9e60ccdf488d",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=tr:nth-child(4) > td:nth-child(6)",
+      "targets": [
+        ["css=tr:nth-child(4) > td:nth-child(6)", "css:finder"],
+        ["xpath=//div[@id='page-content-wrapper']/div/div[2]/div/table/tbody/tr[4]/td[6]", "xpath:idRelative"],
+        ["xpath=//tr[4]/td[6]", "xpath:position"]
+      ],
+      "value": "Expected to resolve to node Crocodylidae and resolved correctly to Crocodylidae"
+    }, {
+      "id": "6ada921d-6466-4b01-947e-7bf914249965",
+      "comment": "",
+      "command": "click",
+      "target": "css=tr:nth-child(5) > td:nth-child(6)",
+      "targets": [
+        ["css=tr:nth-child(5) > td:nth-child(6)", "css:finder"],
+        ["xpath=//div[@id='page-content-wrapper']/div/div[2]/div/table/tbody/tr[5]/td[6]", "xpath:idRelative"],
+        ["xpath=//tr[5]/td[6]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "c1b49744-3b28-48f5-b8f7-1ad35d909922",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=tr:nth-child(5) > td:nth-child(6)",
+      "targets": [
+        ["css=tr:nth-child(5) > td:nth-child(6)", "css:finder"],
+        ["xpath=//div[@id='page-content-wrapper']/div/div[2]/div/table/tbody/tr[5]/td[6]", "xpath:idRelative"],
+        ["xpath=//tr[5]/td[6]", "xpath:position"]
+      ],
+      "value": "Expected to resolve to node Crocodylidae and resolved correctly to Crocodylidae"
+    }, {
+      "id": "8c11ce08-6bb0-4b24-b3a6-dea54d8c0b7e",
+      "comment": "",
+      "command": "click",
+      "target": "css=tr:nth-child(6) > td:nth-child(6)",
+      "targets": [
+        ["css=tr:nth-child(6) > td:nth-child(6)", "css:finder"],
+        ["xpath=//div[@id='page-content-wrapper']/div/div[2]/div/table/tbody/tr[6]/td[6]", "xpath:idRelative"],
+        ["xpath=//tr[6]/td[6]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "06fca8ec-f1f6-4cca-bef2-df704c8b43b1",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=tr:nth-child(6) > td:nth-child(6)",
+      "targets": [
+        ["css=tr:nth-child(6) > td:nth-child(6)", "css:finder"],
+        ["xpath=//div[@id='page-content-wrapper']/div/div[2]/div/table/tbody/tr[6]/td[6]", "xpath:idRelative"],
+        ["xpath=//tr[6]/td[6]", "xpath:position"]
+      ],
+      "value": "Expected to resolve to node Diplocynodon ratelii and resolved correctly to Diplocynodon ratelii"
+    }, {
+      "id": "f3fbe19b-d90d-4749-97e2-95c6ae937dcd",
+      "comment": "",
+      "command": "click",
+      "target": "css=.card:nth-child(2) > .card-footer",
+      "targets": [
+        ["css=.card:nth-child(2) > .card-footer", "css:finder"],
+        ["xpath=//div[@id='page-content-wrapper']/div/div[2]/div[2]", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div[2]/div[2]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "aec4e3f1-c856-45f6-b351-19d4cc24bc91",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn-group > .btn-secondary",
+      "targets": [
+        ["css=.btn-group > .btn-secondary", "css:finder"],
+        ["xpath=//div[@id='page-content-wrapper']/div/div[2]/div[2]/div/button[2]", "xpath:idRelative"],
+        ["xpath=//button[2]", "xpath:position"],
+        ["xpath=//button[contains(.,'Export as CSV')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "65cd8360-d614-4b31-be22-a73cf67671d2",
+      "comment": "",
+      "command": "click",
+      "target": "css=.card:nth-child(2) tr:nth-child(1) a",
+      "targets": [
+        ["css=.card:nth-child(2) tr:nth-child(1) a", "css:finder"],
+        ["xpath=//a[contains(text(),'Alligatoridae')]", "xpath:link"],
+        ["xpath=//div[@id='page-content-wrapper']/div/div[2]/div/table/tbody/tr/td[2]/a", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, 'javascript: void(0)')])[26]", "xpath:href"],
+        ["xpath=//td[2]/a", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "c8a822b3-d6a5-4323-b69e-58171df235bf",
+      "comment": "",
+      "command": "assertText",
+      "target": "id=current_expected_label_phylogeny_0",
+      "targets": [
+        ["id=current_expected_label_phylogeny_0", "id"],
+        ["css=#current_expected_label_phylogeny_0", "css:finder"]
+      ],
+      "value": "Alligatoridae"
+    }, {
+      "id": "4fa12d55-ad24-4871-993a-cc8c6be7050f",
+      "comment": "",
+      "command": "click",
+      "target": "css=.overlay",
+      "targets": [
+        ["css=.overlay", "css:finder"]
+      ],
+      "value": ""
+    }, {
+      "id": "01f764c2-12e3-4fb8-8029-adae32a3db68",
+      "comment": "",
+      "command": "click",
+      "target": "css=.h6:nth-child(6) > span",
+      "targets": [
+        ["css=.h6:nth-child(6) > span", "css:finder"],
+        ["xpath=//div[@id='sidebar-wrapper']/div[2]/div/a[6]/span", "xpath:idRelative"],
+        ["xpath=//a[6]/span", "xpath:position"],
+        ["xpath=//span[contains(.,'Alligatorinae')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "fc5f6349-9a52-4d5e-8ba9-40c37b562c33",
+      "comment": "",
+      "command": "click",
+      "target": "css=.h6:nth-child(7) > span",
+      "targets": [
+        ["css=.h6:nth-child(7) > span", "css:finder"],
+        ["xpath=//div[@id='sidebar-wrapper']/div[2]/div/a[7]/span", "xpath:idRelative"],
+        ["xpath=//a[7]/span", "xpath:position"],
+        ["xpath=//span[contains(.,'Caimaninae')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "64540c2e-48f6-43fc-afca-ecacad7f5c95",
+      "comment": "",
+      "command": "click",
+      "target": "css=.h6:nth-child(8) > span",
+      "targets": [
+        ["css=.h6:nth-child(8) > span", "css:finder"],
+        ["xpath=//div[@id='sidebar-wrapper']/div[2]/div/a[8]/span", "xpath:idRelative"],
+        ["xpath=//a[8]/span", "xpath:position"],
+        ["xpath=//span[contains(.,'Crocodyloidea')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "dd7d56f6-42f7-41d9-b431-6248ddee6584",
+      "comment": "",
+      "command": "assertText",
+      "target": "id=current_expected_label_phylogeny_0",
+      "targets": [
+        ["id=current_expected_label_phylogeny_0", "id"],
+        ["css=#current_expected_label_phylogeny_0", "css:finder"]
+      ],
+      "value": "Crocodylidae"
+    }, {
+      "id": "650f6cb7-6670-4a78-8da1-4f55690db60b",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Add Open Tree of Life phylogeny",
+      "targets": [
+        ["linkText=Add Open Tree of Life phylogeny", "linkText"],
+        ["css=.card:nth-child(3) .border-dark:nth-child(4)", "css:finder"],
+        ["xpath=//div[@id='sidebar-wrapper']/div[3]/div/a[4]", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, 'javascript: void(0)')])[28]", "xpath:href"],
+        ["xpath=//div[3]/div/a[4]", "xpath:position"],
+        ["xpath=//a[contains(.,'Add Open Tree of Life phylogeny')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "7ce6977e-3e22-480a-801c-2b1df2e411bf",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Open Tree of Life",
+      "targets": [
+        ["linkText=Open Tree of Life", "linkText"],
+        ["css=.card:nth-child(3) .h6:nth-child(3)", "css:finder"],
+        ["xpath=//a[contains(text(),'Open Tree of Life')]", "xpath:link"],
+        ["xpath=//div[@id='sidebar-wrapper']/div[3]/div/a[3]", "xpath:idRelative"],
+        ["xpath=(//a[contains(@href, 'javascript: void(0)')])[27]", "xpath:href"],
+        ["xpath=//div[3]/div/a[3]", "xpath:position"],
+        ["xpath=//a[contains(.,'Open Tree of Life')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "cee49b62-b5b1-4b49-9c7e-edccb1aed5d7",
+      "comment": "",
+      "command": "click",
+      "target": "css=.start-reasoning > span",
+      "targets": [
+        ["css=.start-reasoning > span", "css:finder"],
+        ["xpath=//div[@id='sidebar-wrapper']/div/div/a[11]/span", "xpath:idRelative"],
+        ["xpath=//span", "xpath:position"],
+        ["xpath=//span[contains(.,'Resolve against phylogenies')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "3ff1769b-4f49-44e7-98c2-3b1f7575206b",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn-primary:nth-child(3)",
+      "targets": [
+        ["css=.btn-primary:nth-child(3)", "css:finder"],
+        ["xpath=//button[@type='button']", "xpath:attributes"],
+        ["xpath=//div[@id='page-content-wrapper']/div/div[3]/div/div/div/button", "xpath:idRelative"],
+        ["xpath=//div[3]/div/div/div/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Download as Nexus')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "cb45e96f-d30c-4659-a439-f7d89b4d241c",
+      "comment": "",
+      "command": "close",
+      "target": "",
+      "targets": [],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "ba4158c4-a319-454e-aff1-a285c369963f",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["40553156-0427-41ef-a43e-97500b1e6f65"]
+  }],
+  "urls": ["http://localhost:5173/"],
+  "plugins": []
+}

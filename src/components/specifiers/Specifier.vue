@@ -1,7 +1,18 @@
+<!--
+  The Specifier component is used in two places:
+  - The PhylorefView uses it to display specifiers for phyloreferences.
+  - The PhylogenyView uses it to display taxonomic units for phylogenies.
+
+  This means that the Specifier component needs to be created with one of two sets of arguments:
+  - `phyloref` when the specifier to be edited is part of a phyloreference.
+  - `phylogeny` and `nodeLabel` when the taxonomic unit to be edited is part of a phylogeny.
+-->
+
 <template>
   <div class="col-md-12">
     <div class="input-group mb-1">
       <div class="input-group-prepend">
+        <!-- Display and change the specifier class. -->
         <button
           class="btn btn-outline-secondary dropdown-toggle"
           type="button"
@@ -12,33 +23,27 @@
           {{ specifierClass }}
         </button>
         <div class="dropdown-menu">
-          <!-- TODO: remove external reference as a type and add it in as a separate property. -->
           <a
             class="dropdown-item"
             :class="{active: specifierClass === 'Taxon'}"
             href="javascript:;"
-            @click="specifierClass = 'Taxon'"
+            @click="specifierClass = 'Taxon'; updateSpecifier()"
           >Taxon</a>
           <a
             class="dropdown-item"
             :class="{active: specifierClass === 'Specimen'}"
             href="javascript:;"
-            @click="specifierClass = 'Specimen'"
+            @click="specifierClass = 'Specimen'; updateSpecifier()"
           >Specimen</a>
           <a
             class="dropdown-item"
             :class="{active: specifierClass === 'External reference'}"
             href="javascript:;"
-            @click="specifierClass = 'External reference'"
+            @click="specifierClass = 'External reference'; updateSpecifier()"
           >External reference</a>
-          <a
-            class="dropdown-item"
-            :class="{active: specifierClass === 'Apomorphy'}"
-            href="javascript:;"
-            @click="specifierClass = 'Apomorphy'"
-          >Apomorphy</a>
         </div>
       </div>
+      <!-- For taxon specifiers only, display all possible nomenclatural codes. -->
       <div
         v-if="specifierClass === 'Taxon'"
         class="input-group-prepend"
@@ -54,31 +59,36 @@
         </button>
         <div class="dropdown-menu">
           <a
-            v-for="(nomenCode, nomenCodeIndex) of nomenCodes"
+            v-for="nomenCode of nomenCodes"
             class="dropdown-item"
-            :class="{active: enteredNomenclaturalCode === nomenCode.iri }"
             href="javascript:;"
-            @click="enteredNomenclaturalCode = nomenCode.iri"
+            @click="nomenclaturalCode = nomenCode.iri"
             :key="nomenCode.iri"
+
+            :class="{active: nomenclaturalCode === nomenCode.iri }"
           >
             {{ nomenCode.label }}
           </a>
         </div>
       </div>
+      <!-- Display a verbatim label describing the specifier. -->
       <input
-        v-model="specifierLabel"
+        v-model.lazy.trim="specifierLabel"
+        readonly
         type="text"
         class="form-control"
       >
+      <!-- The "Edit/Collapse" button can be used to edit this specifier. -->
       <div class="input-group-append">
         <button
           class="btn btn-outline-secondary"
           :class="{active: expand}"
           @click="expand = !expand"
         >
-          {{ (expand) ? 'Collapse' : 'Expand' }}
+          {{ (expand) ? 'Collapse' : 'Edit' }}
         </button>
       </div>
+      <!-- The "Delete" button can be used to delete this specifier. -->
       <div class="input-group-append">
         <button
           class="btn btn-danger"
@@ -88,6 +98,9 @@
         </button>
       </div>
     </div>
+
+    <!-- The Edit card is used to edit this specifier -->
+
     <div
       v-if="expand"
       class="card mt-1 mb-3"
@@ -97,7 +110,7 @@
           Specifier details
         </h5>
 
-        <!-- Specifier type: internal or external. Only applies to phylorefs! -->
+        <!-- Specifier type: internal or external. Only phylorefs have this, so we shouldn't display this for others. -->
         <div v-if="phyloref" class="form-group row">
           <label
             class="col-form-label col-md-2"
@@ -108,7 +121,7 @@
           <div class="col-md-10">
             <select
               id="specifier-type"
-              v-model="specifierType"
+              v-model.lazy.trim="specifierType"
               class="form-control"
             >
               <option value="Internal">
@@ -121,20 +134,19 @@
           </div>
         </div>
 
-        <!-- Verbatim specifier -->
+        <!-- Specifier label -->
         <div class="form-group row">
           <label
             class="col-form-label col-md-2"
-            for="verbatim-specifier"
+            for="specifier-label"
           >
-            Verbatim specifier
+            Specifier label
           </label>
           <div class="col-md-10">
             <input
-              id="verbatim-specifier"
-              v-model="enteredVerbatimLabel"
+              id="specifier-label"
+              v-model.lazy.trim="verbatimLabel"
               class="form-control"
-              @change="updateSpecifier()"
             >
           </div>
         </div>
@@ -150,7 +162,7 @@
           <div class="col-md-10">
             <select
               id="specifier-class"
-              v-model="specifierClass"
+              v-model.lazy.trim="specifierClass"
               class="form-control"
               @change="updateSpecifier()"
             >
@@ -163,16 +175,13 @@
               <option value="External reference">
                 External reference
               </option>
-              <option value="Apomorphy">
-                Apomorphy
-              </option>
             </select>
           </div>
         </div>
 
         <!--
           We provide three different possible displays for the three different
-          types here
+          types here: Taxon, Specimen, External Reference.
         -->
         <template v-if="specifierClass === 'Taxon'">
           <!-- Specifier class -->
@@ -186,7 +195,7 @@
             <div class="col-md-10">
               <select
                 id="nomen-code"
-                v-model="enteredNomenclaturalCode"
+                v-model.lazy.trim="nomenclaturalCode"
                 class="form-control"
               >
                 <option
@@ -210,7 +219,8 @@
             <div class="col-md-10 input-group">
               <input
                 id="name-complete"
-                v-model.lazy="taxonNameWrapped.nameComplete"
+                readonly
+                :value="wrappedTaxonConcept.nameComplete"
                 class="form-control"
               >
             </div>
@@ -226,7 +236,7 @@
             <div class="col-md-10 input-group">
               <input
                 id="genus"
-                v-model="taxonNameWrapped.genusPart"
+                v-model.lazy.trim="genusPart"
                 class="form-control"
               >
             </div>
@@ -242,14 +252,13 @@
             <div class="col-md-10 input-group">
               <input
                 id="specific-epithet"
-                v-model="taxonNameWrapped.specificEpithet"
+                v-model.lazy.trim="specificEpithet"
                 class="form-control"
               >
             </div>
           </div>
 
           <div
-            v-if="taxonNameWrapped.infraspecificEpithet"
             class="form-group row"
           >
             <label
@@ -261,7 +270,7 @@
             <div class="col-md-10 input-group">
               <input
                 id="infraspecific-epithet"
-                v-model="taxonNameWrapped.infraspecificEpithet"
+                v-model.lazy.trim="infraspecificEpithet"
                 class="form-control"
               >
             </div>
@@ -276,13 +285,19 @@
             >
               Occurrence ID
             </label>
-            <div class="col-md-10 input-group">
-              <input
-                id="occurrence-id"
-                v-model="enteredOccurrenceID"
-                class="form-control"
-                placeholder="Enter the occurrence ID of the specimen here, e.g. 'MVZ:Herp:246033'"
-              >
+            <div class="col-md-10">
+              <div class="input-group">
+                <input
+                  id="occurrence-id"
+                  v-model.lazy.trim="occurrenceID"
+                  class="form-control"
+                  placeholder="Enter the occurrence ID of the specimen here, e.g. 'MVZ:Herp:246033' or '000866d2-c177-4648-a200-ead4007051b9'"
+                >
+              </div>
+              <small id="occurrenceIDHelp" class="form-text text-muted">As
+                <a href="https://dwc.tdwg.org/terms/#dwc:occurrenceID" target="_blank">per Darwin Core</a>, we recommend
+                a persistent, globally unique identifier such as a Darwin Core Triple, a URI/IRI or a UUID.
+              </small>
             </div>
           </div>
 
@@ -298,7 +313,7 @@
                 id="collection-code"
                 readonly
                 class="form-control"
-                :value="specimenWrapped.institutionCode"
+                :value="wrappedSpecimen.institutionCode"
               >
             </div>
           </div>
@@ -315,7 +330,7 @@
                 id="collection-code"
                 readonly
                 class="form-control"
-                :value="specimenWrapped.collectionCode"
+                :value="wrappedSpecimen.collectionCode"
               >
             </div>
           </div>
@@ -332,7 +347,7 @@
                 id="catalog-number"
                 readonly
                 class="form-control"
-                :value="specimenWrapped.catalogNumber"
+                :value="wrappedSpecimen.catalogNumber"
               >
             </div>
           </div>
@@ -349,7 +364,7 @@
             <div class="col-md-10 input-group">
               <input
                 id="external-reference"
-                v-model="externalReference"
+                v-model.lazy.trim="externalReference"
                 class="form-control"
               >
               <div class="input-group-append">
@@ -364,13 +379,6 @@
             </div>
           </div>
         </template>
-
-        <template v-if="specifierClass === 'Apomorphy'">
-          <p>
-            Apomorphy-based specifiers are not currently supported. Please enter
-            them into the verbatim label field for now.
-          </p>
-        </template>
       </div>
     </div>
   </div>
@@ -378,15 +386,13 @@
 
 <script>
 /*
- * Displays a specifier as a textfield/expanded field.
+ * The Specifier component is used in two places:
+ * - The PhylorefView uses it to display specifiers for phyloreferences.
+ * - The PhylogenyView uses it to display taxonomic units for phylogenies.
  *
- * Here is a quick guide to how this is wired together:
- *  - Individual text fields will update their synthesized field (i.e. editing genus
- *    will update specifierText).
- *  - Editing or otherwise updating the synthesized field will overwrite
- *    locally stored specifier (specifier).
- *  - If our local specifier falls out of sync with the remoteSpecifier, we
- *    overwrite it using the specifier.
+ * This means that the Specifier component needs to be created with one of two sets of arguments:
+ * - `phyloref` when the specifier to be edited is part of a phyloreference.
+ * - `phylogeny` and `nodeLabel` when the taxonomic unit to be edited is part of a phylogeny.
  */
 
 import { BIconTrash } from 'bootstrap-vue';
@@ -401,25 +407,20 @@ import {
   has, isEqual, cloneDeep, uniqueId,
 } from 'lodash';
 
-
-// TaxonomicUnitWrapper doesn't yet set a type for apomophies, so
-// we'll set one up ourselves.
-TaxonomicUnitWrapper.TYPE_APOMORPHY = 'http://purl.obolibrary.org/obo/CDAO_0000071';
-
 export default {
   name: 'Specifier',
   components: {
+    /* A "trash" icon for deleting this specifier. */
     BIconTrash,
   },
   props: {
-    specifierIndex: {
-      default: () => uniqueId(),
-    },
-    remoteSpecifier: { /* The specifier to display and edit */
+    /* The specifier to display and edit. */
+    remoteSpecifier: {
       type: Object,
       required: true,
     },
-    remoteSpecifierId: { /* An ID for this specifier. We recalculate if this ID changes. */
+    /* This is used to uniquely identify the specifiers on a page. */
+    remoteSpecifierId: {
       type: String,
       required: false,
       default: () => uniqueId('remoteSpecifierId'),
@@ -447,63 +448,70 @@ export default {
     },
   },
   data() {
-    // All of this will be filled in by mounted().
+    // The actual empty data is in methods.emptyData(), except for the `expand` flag.
     return {
       expand: false,
-      specifierClass: undefined,
-      specimenWrapped: undefined,
-      taxonNameWrapped: undefined,
-      enteredNomenclaturalCode: this.$store.getters.getDefaultNomenCodeIRI,
-      enteredVerbatimLabel: undefined,
-      externalReference: undefined,
+      ...this.emptyData(),
     };
   },
   computed: {
+    /** Return a list of all nomenclatural codes recognized by phyx.js. */
     nomenCodes: () => TaxonNameWrapper.getNomenclaturalCodes(),
+    /**
+     * Return the currently selected nomenclatural code as a Nomen Code Details object, which has e.g. the short name of
+     * this code.
+     */
     nomenclaturalCodeObj() {
-      return TaxonNameWrapper.getNomenCodeDetails(this.enteredNomenclaturalCode);
+      return TaxonNameWrapper.getNomenCodeDetails(this.nomenclaturalCode);
     },
-    specifier() {
-      // Check the specifierClass before we figure out how to construct the
-      // specifier we might want to overwrite.
-      let result;
-      switch (this.specifierClass) {
-        case 'Taxon':
-          result = TaxonConceptWrapper.fromLabel(
-            this.enteredScientificName,
-            this.enteredNomenclaturalCode,
-          );
-          break;
 
-        case 'Specimen':
-          result = SpecimenWrapper.fromOccurrenceID(this.enteredOccurrenceID);
-          break;
+    // Taxon name fields.
+    /**
+     * Return a Taxon concept based on the genusName, specificEpithet and the infraspecificEpithet entered by the user.
+     */
+    taxonConcept() {
+      const emptyTaxonConcept = TaxonConceptWrapper.fromLabel('', this.$store.getters.getDefaultNomenCodeIRI);
+      const nomenCodeIRI = this.nomenclaturalCode || this.$store.getters.getDefaultNomenCodeIRI;
 
-        case 'Apomorphy':
-          result = {
-            '@type': TaxonomicUnitWrapper.TYPE_APOMORPHY,
-          };
-          break;
+      // console.log(`wrappedTaxonConcept: ${this.genusPart}, ${this.specificEpithet}, ${this.infraspecificEpithet}.`)
 
-        case 'External reference':
-          result = {
-            // We store the external reference in the '@id' field.
-            '@id': this.externalReference || this.enteredVerbatimLabel || '',
-          };
-          break;
+      try {
+        if (this.genusPart) {
+          if (this.specificEpithet) {
+            if (this.infraspecificEpithet) {
+              return TaxonConceptWrapper.fromLabel(`${this.genusPart} ${this.specificEpithet} ${this.infraspecificEpithet}`, nomenCodeIRI);
+            } else {
+              return TaxonConceptWrapper.fromLabel(`${this.genusPart} ${this.specificEpithet}`, nomenCodeIRI);
+            }
+          } else {
+            return TaxonConceptWrapper.fromLabel(this.genusPart, nomenCodeIRI);
+          }
+        }
 
-        default:
-          // Make sure we have a result, even if it's just a blank object.
-          result = {};
+        return emptyTaxonConcept;
+      } catch {
+        return emptyTaxonConcept;
       }
-
-      // Add the entered verbatim label.
-      if (this.enteredVerbatimLabel) {
-        result.label = this.enteredVerbatimLabel;
-      }
-
-      return result;
     },
+
+    /** Return a TaxonConceptWrapper that wraps the current taxonConcept. */
+    wrappedTaxonConcept() {
+      return new TaxonConceptWrapper(this.taxonConcept);
+    },
+
+    // Specimen fields.
+    /** Return a wrapped specimen based on the only human-editable specimen field: occurrenceID. */
+    wrappedSpecimen() {
+      return SpecimenWrapper.fromOccurrenceID(this.occurrenceID);
+    },
+
+    // Specifier type.
+    /**
+     * Get or set the specifier type. The code inside the store converts a change-of-specifier-type into
+     * removing the specifier from e.g. internalSpecifiers and adding it to e.g. externalSpecifiers.
+     *
+     * This only makes sense if this specifier is part of a phyloref, in which case `this.phyloref` should be set.
+     */
     specifierType: {
       get() {
         if (!this.phyloref) return undefined;
@@ -522,153 +530,248 @@ export default {
         );
       },
     },
-    specifierLabel: {
-      get() {
-        if (this.enteredVerbatimLabel) return this.enteredVerbatimLabel;
-        if (this.externalReference) return this.externalReference;
-        if (this.specimenWrapped) return this.specimenWrapped.label;
-        if (this.taxonNameWrapped) return this.taxonNameWrapped.label;
-        return '';
-      },
-      set(label) {
-        // 1. Set the verbatim label to this.
-        this.enteredVerbatimLabel = label;
 
-        // 2. Attempt to extract the specifier information from there.
-        switch (this.specifierClass) {
-          case 'Taxon':
-            // Try to extract a taxon name from this.
-            this.taxonNameWrapped = TaxonNameWrapper.fromVerbatimName(
-              label,
-              this.enteredNomenclaturalCode,
-            );
-            break;
-
-          case 'Specimen':
-            this.specimenWrapped = SpecimenWrapper.fromOccurrenceID(
-              label,
-            );
-            break;
-
-          case 'Apomorphy':
-            // For now, we just write apomorphies into the verbatim label.
-            break;
-
-          case 'External reference':
-            this.externalReference = label;
-            break;
-        }
-
-        this.updateSpecifier();
-      },
+    /**
+     * The specifier label is what is displayed when the Specifier is not in edit mode. There is also a verbatim label
+     * field, which can be used to override this label (it corresponds to the `label` field of the taxonomic unit). If
+     * the specifier label is empty, we compute a label from either the taxon concept complete name, the specimen
+     * occurrence ID or the external reference.
+     */
+    specifierLabel() {
+      if (this.verbatimLabel) return this.verbatimLabel;
+      switch (this.specifierClass) {
+        case 'Taxon': return this.wrappedTaxonConcept.nameComplete;
+        case 'Specimen': return this.occurrenceID;
+        case 'External reference': return this.externalReference;
+      }
+      return '';
     },
-    enteredScientificName: {
-      // TODO: We should want the user if we couldn't parse this; at the moment,
-      // we silently ignore this and no specifier gets written.
-      get() {
-        if (this.taxonNameWrapped) return this.taxonNameWrapped.nameComplete;
-        return '';
-      },
-      set(scname) {
-        // Don't do anything if a scname is not actually set.
-        if (!scname) return;
 
-        this.taxonNameWrapped = new TaxonNameWrapper(TaxonNameWrapper.fromVerbatimName(scname, this.enteredNomenclaturalCode) || {});
-        this.updateSpecifier();
-        this.enteredScientificName = scname;
-      },
-    },
-    enteredOccurrenceID: {
-      get() {
-        if (this.specimenWrapped) return this.specimenWrapped.occurrenceID;
-        return '';
-      },
-      set(occurID) {
-        this.specimenWrapped = new SpecimenWrapper(SpecimenWrapper.fromOccurrenceID(occurID));
-        this.updateSpecifier();
-      },
-    },
   },
   watch: {
+    // If any of our input parameters change, we should reload this specifier. Note that this doesn't check for updates
+    // to the contents of these parameters, just whether a new phyloref, remoteSpecifier or remoteSpecifierId has been
+    // provided to this template.
     phyloref() {
-      this.recalculateEntered();
+      this.loadSpecifier();
     },
     phylogeny() {
-      this.recalculateEntered();
+      this.loadSpecifier();
     },
     nodeLabel() {
-      this.recalculateEntered();
+      this.loadSpecifier();
     },
     remoteSpecifier() {
-      this.recalculateEntered();
+      // Did we trigger this?
+      if (!this.remoteSpecifierTriggeredHere)
+        this.loadSpecifier();
+      else
+        this.remoteSpecifierTriggeredHere = false;
     },
     remoteSpecifierId() {
-      this.recalculateEntered();
+      this.loadSpecifier();
     },
-    specifierClass() {
-      // If this changes we need to update the specifier!
-      this.updateSpecifier();
-    },
+    // If the user edits any of the input components, trigger an updateSpecifier() so that we save those changes to
+    // the underlying data objects.
+    verbatimLabel()         { this.updateSpecifier(); },
+    nomenclaturalCode()     { this.updateSpecifier(); },
+    genusPart()             { this.updateSpecifier(); },
+    specificEpithet()       { this.updateSpecifier(); },
+    infraspecificEpithet()  { this.updateSpecifier(); },
+    occurrenceID()          { this.updateSpecifier(); },
+    externalReference()     { this.updateSpecifier(); },
   },
+  // Load the specifier when this component is loaded for the first time.
   mounted() {
-    this.recalculateEntered();
+    this.loadSpecifier();
   },
   methods: {
-    getSpecifierClass(tunit) {
-      // Return the specifier class for a tunit.
-      if (tunit.types.length > 0) {
-        switch (tunit.types[0]) {
-          case TaxonomicUnitWrapper.TYPE_TAXON_CONCEPT:
-            return 'Taxon';
+    emptyData() {
+      /*
+       * This method can be used to reset this.$data to its initial state. The only variable missing is `expand`,
+       * because we don't want to reset that every time we load.
+       */
+      return {
+        // Fields for all specifier types.
+        specifierClass: "",
+        verbatimLabel: "",
 
-          case TaxonomicUnitWrapper.TYPE_SPECIMEN:
-            return 'Specimen';
+        // Fields for a taxon name.
+        nomenclaturalCode: "",
+        genusPart: "",
+        specificEpithet: "",
+        infraspecificEpithet: "",
 
-          case TaxonomicUnitWrapper.TYPE_APOMORPHY:
-            return 'Apomorphy';
-        }
+        // Fields for a specimen.
+        occurrenceID: "",
 
-        // If it has an '@id', it is an external reference to that '@id'.
-        if (has(tunit, '@id')) {
-          return 'External reference';
-        }
+        // Fields for an external reference.
+        externalReference: "",
+
+        // We would like to trigger a reload if something else changes a specifier (unlikely, but it might happen in
+        // the future), but we can't trigger that when we update it ourselves. So we set this flag to true while we're
+        // updating it.
+        remoteSpecifierTriggeredHere: false,
+      };
+    },
+    /**
+     * loadSpecifier() reads information from this.remoteSpecifier and loads it into the
+     * local variables used by this component.
+     *
+     * See updateSpecifier() which does the reverse: we call it every time any value changes,
+     * and it copies the changes into this.remoteSpecifier using the appropriate $state.commit()
+     * methods.
+     */
+    loadSpecifier() {
+      console.log('(Re)loading specifier from: ', this.remoteSpecifier);
+
+      // To begin with, let's blank all our variables so that we don't share information between phylorefs.
+      Object.assign(this.$data, this.emptyData());
+
+      // Wrap the remote specifier in a TaxonomicUnitWrapper and figure out
+      // what kind of taxonomic unit it is.
+      const tunit = new TaxonomicUnitWrapper(this.remoteSpecifier || {});
+
+      // Is there an explicit `label` on this remote specifier?
+      // Note we don't use `tunit.label`, becaused TaxonomicUnitWrapper would automatically generate a label:
+      // we only want to set `verbatimLabel` if an explicit `label` was set on this
+      // taxonomic unit.
+      if (has(this.remoteSpecifier, 'label')) {
+        this.verbatimLabel = this.remoteSpecifier['label'];
       }
 
-      return undefined;
-    },
-    recalculateEntered() {
-      console.log('Recalculating entered values from: ', this.remoteSpecifier);
-
-      // Recalculate the entered values.
-      const tunit = new TaxonomicUnitWrapper(cloneDeep(this.remoteSpecifier || {}));
-
-      // If it has an '@id', it is an external reference to that '@id'.
+      // If it has an '@id', we treat it solely as an external reference to that '@id'.
+      // Otherwise, we try to figure out the specifier class.
       if (has(this.remoteSpecifier, '@id')) {
         this.specifierClass = 'External reference';
         this.externalReference = this.remoteSpecifier['@id'];
-        // tunit.label adds '<>s' around the @id. We work around that by trying
-        // to read the label directly.
-        this.enteredVerbatimLabel = this.remoteSpecifier.label || tunit.label;
       } else {
-        this.enteredVerbatimLabel = tunit.label;
-        this.specifierClass = this.getSpecifierClass(tunit) || 'Taxon';
+        // Check the 'types' field to figure out if this tunit is taxon unit or a specimen.
+        if (tunit.types.length > 0) {
+          switch (tunit.types[0]) {
+            case TaxonomicUnitWrapper.TYPE_TAXON_CONCEPT:
+              this.specifierClass = 'Taxon';
+              break;
+
+            case TaxonomicUnitWrapper.TYPE_SPECIMEN:
+              this.specifierClass =  'Specimen';
+          }
+        }
+
+        if (!this.specifierClass) {
+          console.error(`Could not assign a specifier class for ${JSON.stringify(this.remoteSpecifier)}`);
+
+          // Default to Taxon.
+          this.specifierClass = 'Taxon';
+        }
       }
 
+      /*
+       * Here, we do something a little tricky: we load BOTH the taxon concept and the specimen information,
+       * if present. Eventually, we could use this to implement a user interface that allows a specimen with a taxon
+       * concept to be fully represented in the UI, but for now this just means that if you load a taxon unit with both
+       * of these pieces of information, you'll be able to see them if you swap between "Taxon" and "Specimen" in the UI.
+       */
+
+      // To start with, set the nomenclatural code to the default. This uses the default nomenclatural code currently
+      // set in Klados rather than in the Phyx file, but since we load this from the file when we open it, that
+      // should be fine.
+      this.nomenclaturalCode = this.$store.getters.getDefaultNomenCodeIRI;
+
+      // Load the taxon concept, if present.
       const taxonConceptWrapped = new TaxonConceptWrapper(tunit.taxonConcept);
       if (taxonConceptWrapped && taxonConceptWrapped.taxonName) {
-        this.taxonNameWrapped = new TaxonNameWrapper(taxonConceptWrapped.taxonName);
-        this.enteredNomenclaturalCode = this.taxonNameWrapped.nomenclaturalCode
-          || this.enteredNomenclaturalCode;
+        const taxonNameWrapped = new TaxonNameWrapper(taxonConceptWrapped.taxonName);
+
+        this.genusPart = taxonNameWrapped.genusPart;
+        this.specificEpithet = taxonNameWrapped.specificEpithet;
+        this.infraspecificEpithet = taxonNameWrapped.infraspecificEpithet;
+
+        // Override the nomenclatural code if one is present.
+        if (taxonNameWrapped.nomenclaturalCode) {
+          this.nomenclaturalCode = taxonNameWrapped.nomenclaturalCode;
+        }
       }
 
+      // Load the specimen, if present.
       if (tunit.specimen) {
-        this.specimenWrapped = new SpecimenWrapper(tunit.specimen);
+        const specimenWrapped = new SpecimenWrapper(tunit.specimen);
+
+        this.occurrenceID = specimenWrapped.occurrenceID;
+      }
+    },
+    /**
+     * updateSpecifier() updates the underlying this.remoteSpecifier with changes made in this
+     * component. We shouldn't make those changes directly in Vue, so instead we figure out the
+     * correct $store.commit() method to make the change (there are different ones for phylorefs
+     * and for phylogenies).
+     *
+     * See loadSpecifier() which does the reverse: when the underlying data changes (or when this component
+     * is mounted), it loads information from this.remoteSpecifier.
+     */
+    updateSpecifier() {
+      // We don't want to set off a (re)-loadSpecifier() while we're editing the specifier here, so set this flag.
+      this.remoteSpecifierTriggeredHere = true;
+
+      // Step 1. Create a `result` taxonomic unit. Unlike the loading code, we strictly write this out by type, so
+      // if you loaded a taxonomic unit with both Specimen and Taxon information, we ONLY write out EITHER the Specimen
+      // or Taxon information, based on which one is chosen in the UI.
+      let result = {};
+      switch (this.specifierClass) {
+        case 'Taxon':
+          // Set up a taxonomic unit for this taxon.
+          result = this.wrappedTaxonConcept.tunit || {};
+          break;
+
+        case 'Specimen':
+          // Set up a taxonomic unit for this specimen.
+          result = SpecimenWrapper.fromOccurrenceID(this.occurrenceID) || {};
+          break;
+
+        case 'External reference':
+          result = {
+            // We store the external reference in the '@id' field.
+            '@id': this.externalReference,
+          };
+          break;
+
+        default:
+          // Make sure we have a result, even if it's just a blank object.
+          result = {};
       }
 
-      // TODO: what if all fail?
+      // Add the entered verbatim label.
+      if (this.verbatimLabel) {
+        result.label = this.verbatimLabel;
+      }
+
+      // Update the underlying specifier, which requires a different command whether this is a specifier in a phyloref
+      // or in a phylogeny.
+      if (this.phyloref) {
+        console.log('Updating specifier in ', this.phyloref, ' as ', result, ' differs from ', this.remoteSpecifier);
+        this.$store.commit('setSpecifierProps', {
+          specifier: this.remoteSpecifier,
+          props: result,
+        });
+      } else if (this.phylogeny && this.nodeLabel) {
+        console.log(
+          "Updating tunit in ", this.phylogeny, " with node label ", this.nodeLabel
+        );
+        this.$store.commit('replaceTUnitForPhylogenyNode', {
+          phylogeny: this.phylogeny,
+          nodeLabel: this.nodeLabel,
+          tunit: this.remoteSpecifier,
+          tunit_new: result,
+        });
+      } else {
+        console.error("Specifier has neither phyloref nor phylogeny/nodeLabel combination: ", this);
+      }
     },
+    /**
+     * This method deletes the current taxonomic unit. There are two possible ways of doing this, depending on whether
+     * it is a specifier or a taxonomic unit in a phylogeny.
+     */
     deleteSpecifier() {
-      // Update remoteSpecifier to what we've got currently entered.
       const confirmed = confirm('Are you sure you want to delete this specifier?');
       if (confirmed) {
         if (this.phyloref) {
@@ -688,46 +791,9 @@ export default {
         }
       }
     },
-    updateSpecifier() {
-      const result = this.specifier;
-
-      // If our local specifier differs from the remoteSpecifier, update it.
-      if (this.$store.getters.areTUnitsIdentical(result, this.remoteSpecifier))
-        return;
-
-      if (this.phyloref) {
-        console.log('Updating specifier in ', this.phyloref, ' as ', result, ' differs from ', this.remoteSpecifier);
-        this.$store.commit('setSpecifierProps', {
-          specifier: this.remoteSpecifier,
-          props: result,
-        });
-      } else if (this.phylogeny && this.nodeLabel) {
-        console.log(
-          "Updating tunit in ",
-          this.phylogeny,
-          " with node label ",
-          this.nodeLabel,
-          " as ",
-          result,
-          " differs from ",
-          this.remoteSpecifier
-        );
-        this.$store.commit('replaceTUnitForPhylogenyNode', {
-          phylogeny: this.phylogeny,
-          nodeLabel: this.nodeLabel,
-          tunit: this.remoteSpecifier,
-          tunit_new: result,
-        });
-      } else {
-        console.error("Specifier has neither phyloref nor phylogeny/nodeLabel combination: ", this);
-      }
-    },
   },
 };
 </script>
 
 <style>
-.hand-cursor {
-  cursor: pointer;
-}
 </style>

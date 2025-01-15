@@ -1,0 +1,43 @@
+{
+    "phylorefs": [
+        {
+            "label": "Mammalia",
+            "internalSpecifiers": [
+                {
+                    "@type": "http://rs.tdwg.org/ontology/voc/TaxonConcept#TaxonConcept",
+                    "hasName": {
+                        "@type": "http://rs.tdwg.org/ontology/voc/TaxonName#TaxonName",
+                        "label": "Homo sapiens",
+                        "nameComplete": "Homo sapiens",
+                        "genusPart": "Homo",
+                        "specificEpithet": "sapiens",
+                        "nomenclaturalCode": "http://rs.tdwg.org/ontology/voc/TaxonName#ICZN"
+                    }
+                }
+            ],
+            "phylorefType": "phyloref:PhyloreferenceUsingMaximumClade",
+            "externalSpecifiers": [
+                {
+                    "@type": "http://rs.tdwg.org/ontology/voc/TaxonConcept#TaxonConcept",
+                    "hasName": {
+                        "@type": "http://rs.tdwg.org/ontology/voc/TaxonName#TaxonName",
+                        "label": "Enteroctopus dofleini",
+                        "nameComplete": "Enteroctopus dofleini",
+                        "genusPart": "Enteroctopus",
+                        "specificEpithet": "dofleini",
+                        "nomenclaturalCode": "http://rs.tdwg.org/ontology/voc/TaxonName#ICZN"
+                    }
+                }
+            ]
+        }
+    ],
+    "phylogenies": [
+        {
+            "newick": "((Homo_sapiens:1,Mus_musculus:1)Test:1,Enteroctopus_dofleini:1):0;"
+        }
+    ],
+    "curator": "Gaurav Vaidya",
+    "curatorEmail": "gaurav@ggvaidya.com",
+    "curatorORCID": "0000-0003-0587-0454",
+    "defaultNomenclaturalCodeIRI": "http://rs.tdwg.org/ontology/voc/TaxonName#ICZN"
+}
